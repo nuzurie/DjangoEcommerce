@@ -15,11 +15,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'core',
 
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'crispy_forms',
+    
+    'core',
+
 
 ]
 
@@ -80,7 +83,11 @@ DATABASES = {
     }
 }
 
+LOGIN_REDIRECT_URL = '/'
+
 SITE_ID = 1
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 if ENVIRONMENT == 'production':
     DEBUG = False
@@ -93,3 +100,5 @@ if ENVIRONMENT == 'production':
     SECURE_REDIRECT_EXEMPT = []
     SECURE_SSL_REDIRECT = True
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+
