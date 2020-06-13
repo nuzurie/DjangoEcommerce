@@ -1,4 +1,4 @@
-#!/Users/zubairnurie/Documents/django_project_boilerplate/venv/bin/python
+#!/Users/zubairnurie/Documents/DjangoEcommerceWebsite/venv/bin/python
 from django.core import management
 
 if __name__ == "__main__":

@@ -17,6 +17,8 @@
   <link href={% static 'css/mdb.min.css' %} rel="stylesheet">
   <!-- Your custom styles (optional) -->
   <link href={% static "/css/style.min.css" %} rel="stylesheet">
+  <!--django-rating-->
+  <link rel="stylesheet" href="{% static 'star-ratings/css/star-ratings.css' %}">
   <style type="text/css">
     html,
     body,
@@ -74,8 +76,13 @@
     {% include 'footer.html' %}
 
   <!-- SCRIPTS -->
+   <script src="js/addons/rating.js"></script>
+  <!--django-rating-->
+  <script type="text/javascript" src="{% static 'star-ratings/js/dist/star-ratings.min.js' %}"></script>
   <!-- JQuery -->
   <script type="text/javascript" src={% static "js/jquery-3.4.1.min.js" %}></script>
+  <!--reviews jquery-->
+  <script src="{% static "js/reviews.js" %}"></script>
   <!-- Bootstrap tooltips -->
   <script type="text/javascript" src={% static "js/popper.min.js" %}></script>
   <!-- Bootstrap core JavaScript -->

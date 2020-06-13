@@ -1,4 +1,4 @@
-#!/Users/zubairnurie/Documents/django_project_boilerplate/venv/bin/python
+#!/Users/zubairnurie/Documents/DjangoEcommerceWebsite/venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys
