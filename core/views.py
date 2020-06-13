@@ -7,7 +7,8 @@ from django.views.generic import DetailView, ListView, View
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
-from .models import Item, OrderItem, Order
+from .models import Item, OrderItem, Order, ShippingDetails
+from .forms import CheckoutForm
 
 
 class HomeView(ListView):
@@ -32,7 +33,65 @@ class OrderSummaryView(LoginRequiredMixin, View):
 
 
 class CheckoutView(View):
-    pass
+    def get(self, *args, **kwargs):
+        order = Order.objects.filter(user=self.request.user, ordered=False)[0]
+        form = CheckoutForm()
+        context = {
+            'form': form,
+            'order': order
+        }
+        return render(self.request, 'checkout-page.html', context)
+    # TODO: Change redirect links for valid forms
+    def post(self, *args, **kwargs):
+        order = Order.objects.filter(user=self.request.user, ordered=False)[0]
+        form = CheckoutForm(self.request.POST or None)
+        if form.is_valid():
+            try:
+                order = Order.objects.get(
+                    user=self.request.user,
+                    ordered=False
+                )
+                first_name = form.cleaned_data.get('first_name')
+                last_name = form.cleaned_data.get('last_name')
+                street_address_1 = form.cleaned_data.get('street_address_1')
+                apartment = form.cleaned_data.get('apartment')
+                country = form.cleaned_data.get('country')
+                province = form.cleaned_data.get('province')
+                ca_postal_code = form.cleaned_data.get('ca_postal_code')
+                us_state = form.cleaned_data.get('us_state')
+                us_zip_code = form.cleaned_data.get('us_zip_code')
+                # same_billing_address = form.cleaned_data.get('same_billing_address')
+                # save_info = form.cleaned_data.get('save_info')
+                payment_option = form.cleaned_data.get('payment_option')
+
+                if country == 'CA':
+                    province_or_state = province
+                    postal_or_zip_code = ca_postal_code
+                else:
+                    province_or_state = us_state
+                    postal_or_zip_code = us_zip_code
+
+                shipping_details = ShippingDetails(
+                    user=self.request.user,
+                    first_name=first_name,
+                    last_name=last_name,
+                    street_address_1=street_address_1,
+                    apartment=apartment,
+                    country=country,
+                    province_or_state=province_or_state,
+                    postal_or_zip_code=postal_or_zip_code
+                )
+                shipping_details.save()
+                order.shipping_details = shipping_details
+                order.save()
+                return redirect('core:checkout')
+            except ObjectDoesNotExist:
+                messages.error(self.request, "You do not have an active order!")
+                return redirect("/")
+        return render(self.request, 'checkout-page.html', {
+            'form': form,
+            'order': order
+        })
 
 
 class ProductView(DetailView):

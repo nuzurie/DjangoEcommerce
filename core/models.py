@@ -67,13 +67,13 @@ class OrderItem(models.Model):
             return total_saving
 
 
-
 class Order(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     items = models.ManyToManyField(OrderItem)
     start_date = models.DateTimeField(auto_now_add=True)
     ordered_date = models.DateTimeField()
     ordered = models.BooleanField(default=False)
+    shipping_details = models.ForeignKey('ShippingDetails', on_delete=models.SET_NULL,null=True, blank=True)
 
     def __str__(self):
         return self.user.username
@@ -82,7 +82,6 @@ class Order(models.Model):
         return sum([item.quantity for item in self.items.filter(user=self.user, ordered=False)])
 
     def get_order_total(self):
-
         total = decimal.Decimal('0.00')
         for item in self.items.all():
             total += (item.get_total_price())
@@ -94,5 +93,23 @@ COUNTRY_CHOICES = (
     ('US', 'AMERICA'),
 )
 
+PAYMENT_CHOICE = (
+    ('S', 'Stripe'),
+    ('P', 'PAYPAL'),
+)
+
+
+class ShippingDetails(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=24)
+    last_name = models.CharField(max_length=24)
+    street_address_1 = models.CharField(max_length=100)
+    apartment = models.CharField(max_length=12, null=True, blank=True)
+    country = models.CharField(choices=COUNTRY_CHOICES, max_length=3)
+    province_or_state = models.CharField(max_length=24, null=True, blank=True)
+    postal_or_zip_code = models.CharField(max_length=8, null=True, blank=True)
+
+    def __str__(self):
+        return self.user.username
 
 
