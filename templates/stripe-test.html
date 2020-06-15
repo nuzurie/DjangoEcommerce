@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+{% load cart_template_tag %}
+{% block extra_head %}
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        .StripeElement {
+            box-sizing: border-box;
+
+            height: 40px;
+
+            padding: 10px 12px;
+
+            border: 1px solid transparent;
+            border-radius: 4px;
+            background-color: white;
+
+            box-shadow: 0 1px 3px 0 #e6ebf1;
+            -webkit-transition: box-shadow 150ms ease;
+            transition: box-shadow 150ms ease;
+        }
+
+        .StripeElement--focus {
+            box-shadow: 0 1px 3px 0 #cfd7df;
+        }
+
+        .StripeElement--invalid {
+            border-color: #fa755a;
+        }
+
+        .StripeElement--webkit-autofill {
+            background-color: #fefde5 !important;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <main class="pt-4">
+        <div class="container wow fadeIn">
+
+            <!-- Heading -->
+            <h2 class="my-5 h2 text-center">PAYMENT</h2>
+
+
+            <!--Grid row-->
+            <div class="row">
+
+                <!--Grid column-->
+                <div class="col-md-12 mb-4">
+                    <div class="card">
+                        <form id="payment-form">
+                            {% csrf_token %}
+                            <div id="card-element"><!-- placeholder for Elements --></div>
+                            <button class="btn aqua-gradient float-right" id="card-button">Submit Payment</button>
+                            <p id="payment-result"><!-- we'll pass the response from the server here --></p>
+                        </form>
+                    </div>
+                </div>
+
+                <!--Grid column-->
+                <div class="col-md-12 mb-4">
+                  <div class="card col-md-12 mb-4">
+
+                    <!-- Heading -->
+                    <h4 class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-muted">Order Summary</span>
+                        <span class="badge badge-secondary badge-pill">{{ request.user | cart_item_count }}</span>
+                    </h4>
+
+                    <!-- Cart -->
+                    <ul class="list-group mb-3 z-depth-1">
+                        {% for item_order in order.items.all %}
+                            <li class="list-group-item d-flex justify-content-between lh-condensed">
+                                <div>
+                                    <h6 class="my-0">{{ item_order.item }}</h6>
+                                    <small class="text-muted">Quantity: {{ item_order.quantity }}</small>
+                                </div>
+                                <span class="text-muted">${{ item_order.get_total_price }}</span>
+                            </li>
+                        {% endfor %}
+                        <li class="list-group-item d-flex justify-content-between bg-light">
+                            <div class="text-success">
+                                <h6 class="my-0">Promo code</h6>
+                                <small>EXAMPLECODE</small>
+                            </div>
+                            <span class="text-success">-$5</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Total</span>
+                            <strong>${{ order.get_order_total }}</strong>
+                        </li>
+                    </ul>
+                    <!-- Cart -->
+                  </div>
+
+
+                </div>
+                <!--Grid column-->
+            </div>
+        </div>
+    </main>
+                        <script>
+                            var stripe = Stripe('pk_test_TYooMQauvdEDq54NiTphI7jx');
+
+                            var elements = stripe.elements();
+                            var cardElement = elements.create('card');
+                            cardElement.mount('#card-element');
+
+                            var form = document.getElementById('payment-form');
+
+                            function getCookie(name) {
+                                var cookieValue = null;
+                                if (document.cookie && document.cookie !== '') {
+                                    var cookies = document.cookie.split(';');
+                                    for (var i = 0; i < cookies.length; i++) {
+                                        var cookie = cookies[i].trim();
+                                        // Does this cookie string begin with the name we want?
+                                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                            break;
+                                        }
+                                    }
+                                }
+                                return cookieValue;
+                            }
+
+                            var csrftoken = getCookie('csrftoken');
+
+                            var resultContainer = document.getElementById('payment-result');
+                            cardElement.on('change', function (event) {
+                                if (event.error) {
+                                    resultContainer.textContent = event.error.message;
+                                } else {
+                                    resultContainer.textContent = '';
+                                }
+                            });
+
+                            form.addEventListener('submit', function (event) {
+                                event.preventDefault();
+                                resultContainer.textContent = "";
+                                stripe.createPaymentMethod({
+                                    type: 'card',
+                                    card: cardElement,
+                                }).then(handlePaymentMethodResult);
+                            });
+
+                            function handlePaymentMethodResult(result) {
+                                if (result.error) {
+                                    // An error happened when collecting card details, show it in the payment form
+                                    resultContainer.textContent = result.error.message;
+                                } else {
+                                    // Otherwise send paymentMethod.id to your server (see Step 3)
+                                    fetch('.', {
+                                        method: 'POST',
+                                        headers: {'Content-Type': 'application/json', 'X-CSRFToken': csrftoken},
+                                        mode: 'same-origin',
+                                        body: JSON.stringify({payment_method_id: result.paymentMethod.id})
+                                    }).then(function (result) {
+                                        return result.json();
+                                    }).then(handleServerResponse);
+                                }
+                            }
+
+                            function handleServerResponse(responseJson) {
+                                if (responseJson.error) {
+                                    // An error happened when charging the card, show it in the payment form
+                                    resultContainer.textContent = responseJson.error;
+                                } else {
+                                    // Show a success message
+                                    window.location.replace("/");
+                                }
+                            }
+                        </script>
+{% endblock %}
