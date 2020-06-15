@@ -19,7 +19,7 @@
             {% for item_object in order.items.all %}
             <tr class="text-center">
                     <th>{{ forloop.counter }}</th>
-                    <td><a class="text-primary" href="{{ item_object.item.get_absolute_url }}">{{ item_object.item.title }}</a></td>
+                    <td><p><img src="{{ item_object.item.thumbnail.url }}" width=30, height=40></p><a>{{ item_object.item.title }}</a></td>
                     <td>
                         <a href="{% url 'core:remove-one-from-cart' slug=item_object.item.slug %}"><i class="far fa-minus-square"></i></a>
                         {{ item_object.quantity }}

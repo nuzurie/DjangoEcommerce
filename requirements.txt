@@ -6,7 +6,7 @@ defusedxml==0.6.0
 Django==3.0.7
 django-allauth==0.42.0
 django-crispy-forms==1.9.1
-django-haystack==2.8.1
+# django-haystack==2.8.1
 django-localflavor==3.0.1
 django-rated-reviews==0.6.0
 idna==2.9

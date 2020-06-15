@@ -25,23 +25,19 @@
                         <!-- Content -->
                         <div class="text-center white-text mx-5 wow fadeIn">
                             <h1 class="mb-4">
-                                <strong>Learn Bootstrap 4 with MDB</strong>
+                                <strong>Django Ecommerce Website!</strong>
                             </h1>
 
                             <p>
-                                <strong>Best & free guide of responsive web design</strong>
+                                <strong>Cool Offers Here!</strong>
                             </p>
 
                             <p class="mb-4 d-none d-md-block">
-                                <strong>The most comprehensive tutorial for the Bootstrap 4. Loved by over 500 000
-                                    users. Video and
-                                    written versions
-                                    available. Create your own, stunning website.</strong>
+                                <strong>Cool Something Something!</strong>
                             </p>
 
-                            <a target="_blank" href="https://mdbootstrap.com/education/bootstrap/"
-                               class="btn btn-outline-white btn-lg">Start
-                                free tutorial
+                            <a target="_blank" href="#"
+                               class="btn btn-outline-white btn-lg">Cool Link Here!
                                 <i class="fas fa-graduation-cap ml-2"></i>
                             </a>
                         </div>
@@ -65,23 +61,19 @@
                         <!-- Content -->
                         <div class="text-center white-text mx-5 wow fadeIn">
                             <h1 class="mb-4">
-                                <strong>Learn Bootstrap 4 with MDB</strong>
+                                <strong>Let's Change Some Stuff!</strong>
                             </h1>
 
                             <p>
-                                <strong>Best & free guide of responsive web design</strong>
+                                <strong>Cool Offers Here!</strong>
                             </p>
 
                             <p class="mb-4 d-none d-md-block">
-                                <strong>The most comprehensive tutorial for the Bootstrap 4. Loved by over 500 000
-                                    users. Video and
-                                    written versions
-                                    available. Create your own, stunning website.</strong>
+                                <strong>Cool Something Something!</strong>
                             </p>
 
-                            <a target="_blank" href="https://mdbootstrap.com/education/bootstrap/"
-                               class="btn btn-outline-white btn-lg">Start
-                                free tutorial
+                            <a target="_blank" href="#"
+                               class="btn btn-outline-white btn-lg">Cool Link Here!
                                 <i class="fas fa-graduation-cap ml-2"></i>
                             </a>
                         </div>
@@ -105,23 +97,19 @@
                         <!-- Content -->
                         <div class="text-center white-text mx-5 wow fadeIn">
                             <h1 class="mb-4">
-                                <strong>Learn Bootstrap 4 with MDB</strong>
+                                <strong>Exclusive offers here.</strong>
                             </h1>
 
                             <p>
-                                <strong>Best & free guide of responsive web design</strong>
+                                <strong>A Django E-commerce Website.</strong>
                             </p>
 
-                            <p class="mb-4 d-none d-md-block">
-                                <strong>The most comprehensive tutorial for the Bootstrap 4. Loved by over 500 000
-                                    users. Video and
-                                    written versions
-                                    available. Create your own, stunning website.</strong>
-                            </p>
+{#                            <p class="mb-4 d-none d-md-block">#}
+{#                                <strong>Responsive Web Design.</strong>#}
+{#                            </p>#}
 
-                            <a target="_blank" href="https://mdbootstrap.com/education/bootstrap/"
-                               class="btn btn-outline-white btn-lg">Start
-                                free tutorial
+                            <a target="_blank" href="#"
+                               class="btn btn-outline-white btn-lg">Cool Link Here!
                                 <i class="fas fa-graduation-cap ml-2"></i>
                             </a>
                         </div>
@@ -216,9 +204,9 @@
 
                             <!--Card image-->
                             <div class="view overlay">
-                                <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/12.jpg"
+                                <img src="{{ item.image.url }}"
                                      class="card-img-top"
-                                     alt="">
+                                     alt="{{ item.image_caption }}">
                                 <a href="{{ item.get_absolute_url }}">
                                     <div class="mask rgba-white-slight"></div>
                                 </a>

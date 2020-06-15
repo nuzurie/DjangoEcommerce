@@ -11,7 +11,7 @@
                 <!--Grid column-->
                 <div class="col-md-6 mb-4">
 
-                    <img src="https://i.imgflip.com/36q8bo.png" class="img-fluid" alt="">
+                    <img src="{{ item.image.url }}" class="img-fluid" alt="{{ item.image_caption }}">
 
                 </div>
                 <!--Grid column-->
@@ -28,6 +28,7 @@
                             </a>
 
                         </div>
+                        <p class="lead"><h4 class="my-4 h4">{{ item.title }}</h4> </p>
 
                         <p class="lead">
               <span class="mr-1">
@@ -75,6 +76,8 @@
 
             <!--Section: Block Content-->
             <section class="text-center">
+                <h2 class="my-2 h2">Product Recommendations</h2>
+                <hr>
 
                 <!-- Grid row -->
                 <div class="row">
@@ -87,12 +90,12 @@
 
                             <div class="view zoom overlay z-depth-2 rounded">
                                 <img class="img-fluid w-100"
-                                     src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/12a.jpg"
-                                     alt="Sample">
-                                <a href="#!">
+                                     src="{{ item.image.url }}"
+                                     alt="{{item.image_caption}}">
+                                <a href="{{ item.get_absolute_url }}">
                                     <div class="mask">
                                         <img class="img-fluid w-100"
-                                             src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/12.jpg">
+                                             src={{ item.image.url }}>
                                         <div class="mask rgba-black-slight"></div>
                                     </div>
                                 </a>
@@ -125,6 +128,7 @@
 
             </section>
             <!--Section: Block Content-->
+            <hr>
 
             <!--Grid row-->
             <div class="row d-flex justify-content-center wow fadeIn">
