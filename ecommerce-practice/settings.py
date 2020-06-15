@@ -22,9 +22,9 @@ INSTALLED_APPS = [
     'crispy_forms',
     'reviews',
     'localflavor',
-    
-    'core',
+    # 'haystack',
 
+    'core',
 
 ]
 
@@ -65,6 +65,14 @@ TEMPLATES = [
         },
     },
 ]
+#
+# HAYSTACK_CONNECTIONS = {
+#     'default': {
+#         'ENGINE': 'haystack.backends.elasticsearch7_backend.Elasticsearch2SearchEngine',
+#         'URL': 'http://127.0.0.1:9200/',
+#         'INDEX_NAME': 'haystack',
+#     },
+# }
 
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
@@ -102,5 +110,3 @@ if ENVIRONMENT == 'production':
     SECURE_REDIRECT_EXEMPT = []
     SECURE_SSL_REDIRECT = True
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
-

@@ -45,6 +45,13 @@ class Item(models.Model):
             'slug': self.slug
         })
 
+    def cross_sells(self):
+        from core.models import Order, OrderItem
+        order_qs = Order.objects.filter(items__item=self)
+        order_item_qs = OrderItem.objects.filter(order__in=order_qs)
+        items_qs = Item.objects.filter(orderitem__in=order_item_qs).distinct()
+        return items_qs
+
 
 class OrderItem(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -74,6 +81,7 @@ class Order(models.Model):
     ordered_date = models.DateTimeField()
     ordered = models.BooleanField(default=False)
     shipping_details = models.ForeignKey('ShippingDetails', on_delete=models.SET_NULL,null=True, blank=True)
+    payment = models.ForeignKey('StripePayment', on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
         return self.user.username
@@ -100,7 +108,7 @@ PAYMENT_CHOICE = (
 
 
 class ShippingDetails(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     first_name = models.CharField(max_length=24)
     last_name = models.CharField(max_length=24)
     street_address_1 = models.CharField(max_length=100)
@@ -111,5 +119,16 @@ class ShippingDetails(models.Model):
 
     def __str__(self):
         return self.user.username
+
+
+class StripePayment(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True)
+    stripe_payment_id = models.CharField(max_length=50)
+    amount = models.FloatField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.user.username
+
 
 

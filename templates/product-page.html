@@ -1,35 +1,35 @@
 {% extends 'base.html' %}
 {% load reviews %}
 {% block content %}
-  <!--Main layout-->
-  <main class="mt-5 pt-4">
-    <div class="container dark-grey-text mt-5">
+    <!--Main layout-->
+    <main class="mt-5 pt-4">
+        <div class="container dark-grey-text mt-5">
 
-      <!--Grid row-->
-      <div class="row wow fadeIn">
+            <!--Grid row-->
+            <div class="row wow fadeIn">
 
-        <!--Grid column-->
-        <div class="col-md-6 mb-4">
+                <!--Grid column-->
+                <div class="col-md-6 mb-4">
 
-          <img src="https://i.imgflip.com/36q8bo.png" class="img-fluid" alt="">
+                    <img src="https://i.imgflip.com/36q8bo.png" class="img-fluid" alt="">
 
-        </div>
-        <!--Grid column-->
+                </div>
+                <!--Grid column-->
 
-        <!--Grid column-->
-        <div class="col-md-6 mb-4">
+                <!--Grid column-->
+                <div class="col-md-6 mb-4">
 
-          <!--Content-->
-          <div class="p-4">
-                <h1></h1>
-            <div class="mb-3">
-              <a href="">
-                <span class="badge purple mr-1">{{ object.get_category_display }}</span>
-              </a>
+                    <!--Content-->
+                    <div class="p-4">
+                        <h1></h1>
+                        <div class="mb-3">
+                            <a href="">
+                                <span class="badge purple mr-1">{{ object.get_category_display }}</span>
+                            </a>
 
-            </div>
+                        </div>
 
-            <p class="lead">
+                        <p class="lead">
               <span class="mr-1">
                   {% if object.discount_price %}
                       <del>${{ object.price }}</del>
@@ -38,14 +38,14 @@
                   {% else %}
                       <span>${{ object.price }}</span>
                   {% endif %}
-            </p>
+                        </p>
 
-            <p class="lead font-weight-bold">{{ Description }}</p>
+                        <p class="lead font-weight-bold">{{ Description }}</p>
 
-            <p> {{ object.description }}</p>
+                        <p> {{ object.description }}</p>
 
 
-          {% comment %}
+                        {% comment %}
             <form class="d-flex justify-content-left">
               <!-- Default input -->
               <input type="number" value="1" aria-label="Search" class="form-control" style="width: 100px">
@@ -55,42 +55,97 @@
 
             </form>
           {% endcomment %}
-              <a href= "{{ object.get_add_to_cart_url }}"class="btn btn-primary btn-md my-0 p" >Add to cart
-                <i class="fas fa-shopping-cart ml-1"></i></a>
-              <a href= "{{ object.get_remove_from_cart }}"class="btn btn-danger btn-md my-0 p" >Remove from cart</a>
+                        <a href="{{ object.get_add_to_cart_url }}" class="btn btn-primary btn-md my-0 p">Add to cart
+                            <i class="fas fa-shopping-cart ml-1"></i></a>
+                        <a href="{{ object.get_remove_from_cart }}" class="btn btn-danger btn-md my-0 p">Remove from
+                            cart</a>
 
-          </div>
-          <!--Content-->
-        <div class="invisible">{% render_review_form for object %}</div>
-        {% render_review_list for object %}
+                    </div>
+                    <!--Content-->
+                    <div class="invisible">{% render_review_form for object %}</div>
+                    {% render_review_list for object %}
 
-        </div>
-        <!--Grid column-->
+                </div>
+                <!--Grid column-->
 
-      </div>
-      <!--Grid row-->
+            </div>
+            <!--Grid row-->
 
-      <hr>
+            <hr>
 
-      <!--Grid row-->
-      <div class="row d-flex justify-content-center wow fadeIn">
+            <!--Section: Block Content-->
+            <section class="text-center">
 
-        <!--Grid column-->
-        <div class="col-md-6 text-center">
+                <!-- Grid row -->
+                <div class="row">
+                {% for item in item.cross_sells %}
+                    <!-- Grid column -->
+                    <div class="col-md-6 col-lg-3 mb-5">
 
-          <h4 class="my-4 h4">Additional information</h4>
+                        <!-- Card -->
+                        <div class="">
 
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus suscipit modi sapiente illo soluta odit
-            voluptates,
-            quibusdam officia. Neque quibusdam quas a quis porro? Molestias illo neque eum in laborum.</p>
+                            <div class="view zoom overlay z-depth-2 rounded">
+                                <img class="img-fluid w-100"
+                                     src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/12a.jpg"
+                                     alt="Sample">
+                                <a href="#!">
+                                    <div class="mask">
+                                        <img class="img-fluid w-100"
+                                             src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/12.jpg">
+                                        <div class="mask rgba-black-slight"></div>
+                                    </div>
+                                </a>
+                            </div>
 
-        </div>
-        <!--Grid column-->
+                            <div class="pt-4">
 
-      </div>
-      <!--Grid row-->
+                                <h5><strong> {{ item.title | title }}</strong></h5>
 
-      <!--Grid row-->
+                                {% if item.discount_price %}
+                                    <h6>
+                                      <span class="text-danger mr-1">${{ item.discount_price }}</span>
+                                      <span class="text-grey"><s>${{ item.price }}</s></span>
+                                    </h6>
+                                {% else %}
+                                    <h6>${{ item.price }}</h6>
+                                {% endif %}
+                            </div>
+
+                        </div>
+                        <!-- Card -->
+
+                    </div>
+                    <!-- Grid column -->
+                 {% endfor %}
+
+
+                </div>
+                <!-- Grid row -->
+
+            </section>
+            <!--Section: Block Content-->
+
+            <!--Grid row-->
+            <div class="row d-flex justify-content-center wow fadeIn">
+
+                <!--Grid column-->
+                <div class="col-md-6 text-center">
+
+                    <h4 class="my-4 h4">Additional information</h4>
+
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus suscipit modi sapiente illo soluta
+                        odit
+                        voluptates,
+                        quibusdam officia. Neque quibusdam quas a quis porro? Molestias illo neque eum in laborum.</p>
+
+                </div>
+                <!--Grid column-->
+
+            </div>
+            <!--Grid row-->
+
+            {% comment %}<!--Grid row-->
       <div class="row wow fadeIn">
 
         <!--Grid column-->
@@ -118,9 +173,10 @@
         <!--Grid column-->
 
       </div>
-      <!--Grid row-->
+      <!--Grid row-->{% endcomment %}
 
-    </div>
-  </main>
-  <!--Main layout-->
+
+        </div>
+    </main>
+    <!--Main layout-->
 {% endblock content %}

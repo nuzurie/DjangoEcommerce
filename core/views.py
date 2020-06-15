@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponseRedirect
+from django.core.serializers import json
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
@@ -7,7 +8,10 @@ from django.views.generic import DetailView, ListView, View
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
-from .models import Item, OrderItem, Order, ShippingDetails
+import stripe
+import json
+
+from .models import Item, OrderItem, Order, ShippingDetails, StripePayment
 from .forms import CheckoutForm
 
 
@@ -84,7 +88,7 @@ class CheckoutView(View):
                 shipping_details.save()
                 order.shipping_details = shipping_details
                 order.save()
-                return redirect('core:checkout')
+                return redirect('core:stripe-payment')
             except ObjectDoesNotExist:
                 messages.error(self.request, "You do not have an active order!")
                 return redirect("/")
@@ -92,6 +96,75 @@ class CheckoutView(View):
             'form': form,
             'order': order
         })
+
+stripe.api_key = 'sk_test_4eC39HqLyjWDarjtT1zdp7dc'
+
+
+def generate_response(intent):
+    if intent.status == 'succeeded':
+        # Handle post-payment fulfillment
+        return JsonResponse({'success': True})
+    else:
+        # Any other status would be unexpected, so error
+        return JsonResponse({'error': 'Invalid PaymentIntent status'})
+
+
+class PaymentView(View):
+    def get(self, *args, **kwargs):
+        try:
+            order = Order.objects.get(user=self.request.user, ordered=False)
+            context = {
+                'order': order,
+            }
+            return render(self.request, 'stripe-test.html', context)
+        except ObjectDoesNotExist:
+            messages.error(self.request, "You do not have an active order!")
+            return redirect('/')
+
+    def post(self, *args, **kwargs):
+        if self.request.method == 'POST':
+            byte_str = self.request.body
+            data = json.loads(byte_str.decode('utf-8'))
+            try:
+                order = Order.objects.get(user=self.request.user, ordered=False)
+                # Create the PaymentIntent
+                intent = stripe.PaymentIntent.create(
+                    amount=int(order.get_order_total())*100,
+                    currency='CAD',
+                    payment_method=data["payment_method_id"],
+
+                    # A PaymentIntent can be confirmed some time after creation,
+                    # but here we want to confirm (collect payment) immediately.
+                    confirm=True,
+
+                    # If the payment requires any follow-up actions from the
+                    # customer, like two-factor authentication, Stripe will error
+                    # and you will need to prompt them for a new payment method.
+                    error_on_requires_action=True,
+                )
+                id = intent['id']
+                if intent['status'] == 'succeeded':
+                    payment = StripePayment(
+                        stripe_payment_id=id,
+                        user=self.request.user,
+                        amount=intent["amount"]
+                    )
+                    payment.save()
+                    order.ordered = True
+                    order.payment = payment
+                    order.ordered_date = timezone.now()
+                    order.save()
+                    for order_item in order.items.all():
+                        order_item.delete()
+                    print("OH YES!")
+
+                return generate_response(intent)
+            except stripe.error.CardError as e:
+                # Display error on client
+                return json.dumps({'error': e.user_message}), 200
+
+
+
 
 
 class ProductView(DetailView):

@@ -9,6 +9,7 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
     path('', include('core.urls', namespace='core')),
     url(r'^reviews/', include('reviews.urls')),
+    # url(r'^search/', include('haystack.urls')),
 
 ]
 
