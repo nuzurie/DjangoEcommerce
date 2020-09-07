@@ -63,8 +63,10 @@
 
                     </div>
                     <!--Content-->
+                {% if request.user.is_authenticated %}
                     <div class="invisible">{% render_review_form for object %}</div>
                     {% render_review_list for object %}
+                {% endif %}
 
                 </div>
                 <!--Grid column-->
