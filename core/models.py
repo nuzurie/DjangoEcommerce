@@ -24,6 +24,9 @@ class Item(models.Model):
     discount_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     category = models.CharField(choices=CATEGORY_CHOICES, max_length=100)
     label = models.CharField(choices=LABEL_CHOICES, max_length=100)
+    image = models.ImageField(upload_to='images/items/main', null=True)
+    thumbnail = models.ImageField(upload_to='images/items/thumbnails', null=True)
+    image_caption = models.CharField(max_length=200, default="Product image.")
     slug = models.SlugField(unique=True)
     description = models.TextField(max_length=300)
 

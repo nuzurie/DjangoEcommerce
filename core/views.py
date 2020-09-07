@@ -155,13 +155,16 @@ class PaymentView(View):
                     order.ordered_date = timezone.now()
                     order.save()
                     for order_item in order.items.all():
-                        order_item.delete()
+                        order_item.ordered = True
+                        order_item.save()
                     print("OH YES!")
 
                 return generate_response(intent)
             except stripe.error.CardError as e:
-                # Display error on client
-                return json.dumps({'error': e.user_message}), 200
+                print(e)
+                messages.warning(self.request, e)
+                return JsonResponse({'error': 'Invalid PaymentIntent status'})
+
 
 
 
